@@ -1,8 +1,8 @@
 import express from "express";
 import type{Request, Response, NextFunction} from "express"
 import { ProductController } from "../controller/product.controller.js";
-import {createProductSchema, PatchProductSchema, accessListProductSchema} from"../validation/product.validation.js"
-import {validateBody, validateQuery} from"../middleWare/validateMiddle.js"
+import {productIdSchema,createProductSchema, PatchProductSchema, accessListProductSchema} from"../validation/product.validation.js"
+import {validateParam,validateBody, validateQuery} from"../middleWare/validateMiddle.js"
 import passport from "passport";
 
 
@@ -20,6 +20,7 @@ router.get("/",
 
 // API : 상품 데이터 조회
 router.get("/:id",
+    validateParam(productIdSchema),
     async(req:Request, res: Response, next:NextFunction) =>{
     productController.accessProduct(req, res, next)
 })
