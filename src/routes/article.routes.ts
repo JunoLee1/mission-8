@@ -3,6 +3,7 @@ import express from "express";
 import { ArticleController } from "../controller/article.controller.js";
 import {querySchema,paramsSchema,bodySchema} from"../validation/article.validation.js";
 import { validateQuery,validateParam,validateBody} from "../middleWare/validateMiddle.js";
+import passport from "passport";
 const router = express.Router()
 const articleController = new ArticleController()
 
@@ -25,6 +26,7 @@ router.get("/:id",
 //회원만 게시글 업로드/ 수정/ 삭제 가능
 router.post("/",
     validateBody(bodySchema),
+    passport.authenticate("local",{session:false}),
     async(req:Request,res:Response,next:NextFunction)=>{
     articleController.createArticle(req, res, next)
 })
@@ -33,12 +35,16 @@ router.post("/",
 router.patch("/:id",
     validateParam(paramsSchema),
     validateBody(bodySchema),
+    passport.authenticate("local",{session:false}),
     async(req:Request,res:Response,next:NextFunction)=>{
     articleController.modifyArticle(req, res, next)
 })
 
 
-router.delete("/:id",async(req:Request,res:Response,next:NextFunction)=>{
+router.delete("/:id",
+    validateParam(paramsSchema),
+    passport.authenticate("local",{session:false}),
+    async(req:Request,res:Response,next:NextFunction)=>{
     articleController.deleteArticle(req, res, next)
 })
 
