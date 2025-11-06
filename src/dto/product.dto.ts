@@ -12,6 +12,7 @@ export interface productDTO {
   productTags?: number[];
 }
 
+
 export interface ProductQueryDTO {
   page: number;
   take: number;
@@ -21,3 +22,4 @@ export interface ProductQueryDTO {
 }
 
 
+ 
