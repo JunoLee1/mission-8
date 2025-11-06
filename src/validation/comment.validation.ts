@@ -19,3 +19,4 @@ export const commentPatchSchema = z.object({
      content:z.string().min(10,"10자 이상").max(100, "100자 이하").optional(),
     title: z.string().min(1,"1글자 이상").max(10, "10자 이하").optional(),
 })
+
