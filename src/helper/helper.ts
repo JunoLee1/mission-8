@@ -1,4 +1,4 @@
-import prisma from "lib/prisma.js";
+import prisma from "../lib/prisma.js";
 
 export class Helper {
     async findProductById(id: number) {
@@ -17,5 +17,11 @@ export class Helper {
         });
         return result;
       }
-    
+
+      async findCommentById(id: number){
+        const result = await prisma.comment.findUnique({
+          where:{id}
+        })
+        return result;
+      }
 }
