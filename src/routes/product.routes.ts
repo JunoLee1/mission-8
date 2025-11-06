@@ -38,6 +38,7 @@ router.post("/",
 // API : 상품 정보 수정
 router.patch("/:id",
     passport.authenticate("local",{session:false}),
+    validateParam(productIdSchema),
     validateBody(PatchProductSchema),
     async(req:Request, res: Response, next:NextFunction) =>{
     productController.modifyProduct(req, res, next)
