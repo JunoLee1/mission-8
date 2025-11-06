@@ -4,7 +4,7 @@ import type {
   PatchArticleDTO,
 } from "../dto/article.dto.js";
 import prisma from "../lib/prisma.js";
-import { Helper } from "helper/helper.js";
+import { Helper } from "../helper/helper.js";
 
 
 const helper = new Helper()
