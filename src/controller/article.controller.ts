@@ -98,7 +98,9 @@ export class ArticleController {
       if (!userId) throw new Error("unauthorized"); // 401
       const articleId = Number(req.params?.id);
       const result = await this.articleService.deleteArticle(userId, articleId);
-      res.status(200).json();
+      res.status(200).json({
+        result
+      });
     } catch (error) {
       next(error);
     }
