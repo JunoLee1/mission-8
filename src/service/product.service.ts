@@ -1,21 +1,16 @@
 import prisma from "../lib/prisma.js";
-import type { ProductQueryDTO, productDTO } from "../dto/product.dto.js";
+import type { ProductQueryDTO,productDTO } from "../dto/product.dto.js";
 import { PrismaClient } from "@prisma/client";
+import {Helper} from "../helper/helper.js"
+
+const helper = new Helper()
 
 export class ProductService {
   private prisma: PrismaClient; // ← 필드 선언
   constructor(prismaClient: PrismaClient) {
     this.prisma = prismaClient; //  ← 생성자에서 초기화
   }
-  // ------- 공용
-  async findItemById(id: number) {
-    const result = await prisma.product.findUnique({
-      where: { id },
-    });
-    return result;
-  }
 
-  // --------
   async accessListProduct(query: ProductQueryDTO) {
     const { page, take, name, description, keyword } = query;
     const skip = (page - 1) * take;
@@ -50,7 +45,7 @@ export class ProductService {
   }
 
   async accessProduct(id: number) {
-    const result = await this.findItemById(id);
+    const result = await helper.findProductById(id);
 
     if (!result) throw new Error("해당 아이템이 존재 하지않습니다.");
     return result;
@@ -83,7 +78,7 @@ export class ProductService {
     const { id, name, description, price, ownerId, productTags } = element;
 
     const idNum = Number(id);
-    const product = await this.findItemById(idNum);
+    const product = await helper.findProductById(idNum);
     if (!product) throw new Error("해당 제품은 존재 하지않습니다");
 
       if(product.ownerId !== userId){
@@ -113,7 +108,7 @@ export class ProductService {
 
   async deleteProduct(id:number, userId:number){
 
-    const product = await this.findItemById(id)
+    const product = await helper.findProductById(id)
     if(!product) throw new Error("해당 제품은 존재 하지않습니다.")
     
     if(product.ownerId !== userId){
