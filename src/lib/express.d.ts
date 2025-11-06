@@ -1,5 +1,5 @@
 import Express from 'express'; 
-import {LoginDTO} from "../dto/auth.dto.ts"
+
 declare global {
   namespace Express {
     interface User{
@@ -9,7 +9,7 @@ declare global {
       password: string | null,
     }
     interface Request {
-      user?:IUserDTO
+      user?: User;
     }
   }
 }
