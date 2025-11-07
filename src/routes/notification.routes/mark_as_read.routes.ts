@@ -13,7 +13,7 @@ router.patch("/:id",
     passport.authenticate("local",{session:false}),
     validateBody(bodySchema),
     async( req:Request,res: Response, next:NextFunction) => {
-    notificationController.modifyStatus(req, res, next)
+        return notificationController.modifyStatus(req, res, next)
 })
 
 export default router

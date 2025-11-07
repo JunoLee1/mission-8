@@ -13,7 +13,7 @@ router.post("/",
     passport.authenticate("local",{session:false}), 
     validateBody(bodySchema),
     async(req:Request, res:Response,next:NextFunction)=> {
-    notificationController.alertSend(req, res, next)
+    return notificationController.alertSend(req, res, next)
     })
 
 export default router

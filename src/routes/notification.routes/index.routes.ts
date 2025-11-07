@@ -19,7 +19,7 @@ router.get("/",
     passport.authenticate("local",{session:false}),
     validateQuery(querySchema),
     async(req:Request,res:Response,next:NextFunction) => {
-    notificationController.accessAlerts(req, res, next)
+        return notificationController.accessAlerts(req, res, next)
 })
 
 // 유저의 안 읽은 알림의 개수를 조회
@@ -28,7 +28,7 @@ router.get("/:id",
     validateParam(paramsSchema),
     validateQuery(querySchema),
     async(req:Request,res:Response,next:NextFunction) => {
-    notificationController.accessAlertsCnt(req, res, next)
+        return notificationController.accessAlertsCnt(req, res, next)
 })
 
 

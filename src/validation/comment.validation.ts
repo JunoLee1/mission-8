@@ -7,7 +7,7 @@ export const commentQuerySchema = z.object({
 })
 
 export const commentParamSchema = z.object({
-    id: z.coerce.number().positive().default(0)
+    id: z.coerce.number().positive()
 })
 
 export const commentBodySchema = z.object({

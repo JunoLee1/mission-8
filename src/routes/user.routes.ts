@@ -2,7 +2,10 @@ import type { Request, Response, NextFunction } from "express";
 import express from "express";
 import passport from "passport";
 import { UserController } from "../controller/user.controller.js";
-import { updateUserInfoSchema,changePasswordSchema } from "../validation/user.validation.js";
+import {
+  updateUserInfoSchema,
+  changePasswordSchema,
+} from "../validation/user.validation.js";
 import { validateBody } from "../middleWare/validateMiddle.js";
 const router = express.Router();
 const userController = new UserController();
@@ -11,28 +14,30 @@ router.get(
   "/me",
   passport.authenticate("local", { session: false }),
   async (req: Request, res: Response, next: NextFunction) => {
-    userController.accessUserProducts(req, res, next);
+    await userController.accessUserProducts(req, res, next);
   }
 );
 
 // 유저 정보 조회
 router.get("/me", async (req: Request, res: Response, next: NextFunction) => {
-  userController.accessUserInfo(req, res, next);
+  await userController.accessUserInfo(req, res, next);
 });
 
 // 유저 정보 변경
-router.patch("/me",
+router.patch(
+  "/me",
   validateBody(updateUserInfoSchema),
-   async (req: Request, res: Response, next: NextFunction) => {
-  userController.modifyUserInfo(req, res, next);
-});
+  async (req: Request, res: Response, next: NextFunction) => {
+    await userController.modifyUserInfo(req, res, next);
+  }
+);
 
 //유저 비밀번호 변경
 router.patch(
   "/me/password",
   validateBody(changePasswordSchema),
   async (req: Request, res: Response, next: NextFunction) => {
-    userController.modifyUserPassword(req, res, next);
+    await userController.modifyUserPassword(req, res, next);
   }
 );
 

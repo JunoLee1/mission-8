@@ -1,51 +1,66 @@
 import type { Request, Response, NextFunction } from "express";
-import express from "express"
-import {validateParam,validateBody, validateQuery} from"../middleWare/validateMiddle.js"
-import{ commentParamSchema, commentPatchSchema, commentBodySchema, commentQuerySchema } from "../validation/comment.validation.js"
+import express from "express";
+import {
+  validateParam,
+  validateBody,
+  validateQuery,
+} from "../middleWare/validateMiddle.js";
+import {
+  commentParamSchema,
+  commentPatchSchema,
+  commentBodySchema,
+  commentQuerySchema,
+} from "../validation/comment.validation.js";
 import passport from "passport";
 import { CommentController } from "../controller/comment.controller.js";
 
-const router = express.Router()
-const commentController = new CommentController()
+const router = express.Router();
+const commentController = new CommentController();
 
-// 댓글 리스트 및 댓글 조회 
-router.get("/",
-    validateQuery(commentQuerySchema),
-    async(req:Request, res:Response, next:NextFunction)=>{
-    commentController.accessCommentList(req, res, next)
-})
+// 댓글 리스트 및 댓글 조회
+router.get(
+  "/",
+  validateQuery(commentQuerySchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    await commentController.accessCommentList(req, res, next);
+  }
+);
 
-
-router.get("/:id",
-    validateParam(commentParamSchema),
-    async(req:Request, res:Response, next:NextFunction)=>{
-    commentController.accessComment(req, res, next)
-})
+router.get(
+  "/:id",
+  validateParam(commentParamSchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    await commentController.accessComment(req, res, next);
+  }
+);
 
 // 회원만 댓글 생성/ 수정/ 삭제 가능
-router.post("/",
-    passport.authenticate("local",{session:false}),
-    validateBody(commentBodySchema),
-    async(req:Request, res:Response, next:NextFunction)=>{
-    commentController.createComment(req, res, next)
-})
+router.post(
+  "/",
+  passport.authenticate("local", { session: false }),
+  validateBody(commentBodySchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    await commentController.createComment(req, res, next);
+  }
+);
 
+router.patch(
+  "/:id",
+  passport.authenticate("local", { session: false }),
+  validateParam(commentParamSchema),
+  validateBody(commentPatchSchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    await commentController.modifyComment(req, res, next);
+  }
+);
 
-router.patch("/:id",
-    passport.authenticate("local",{session:false}),
-    validateParam(commentParamSchema),
-    validateBody(commentPatchSchema),
-    async(req:Request, res:Response, next:NextFunction)=>{
-    commentController.modifyComment(req, res, next)
-})
-
-
-router.delete("/:id",
-    passport.authenticate("local",{session:false}),
-     validateParam(commentParamSchema),
-    async(req:Request, res:Response, next:NextFunction)=>{
-    commentController.deleteComment(req, res, next)
-})
-
+router.delete(
+  "/:id",
+  passport.authenticate("local", { session: false }),
+  validateParam(commentParamSchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    await commentController.deleteComment(req, res, next);
+  }
+);
 
 export default router;
