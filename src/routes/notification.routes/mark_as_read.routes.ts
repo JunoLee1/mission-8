@@ -2,7 +2,7 @@ import express from "express";
 import type { Request,Response, NextFunction } from "express";
 import { validateBody} from "../../middleWare/validateMiddle.js";
 import {bodySchema}  from "../../validation/notification.validation.js"
-import { NotificationController } from "controller/notification.controller.js";
+import { NotificationController } from "../../controller/notification.controller.js";
 import passport  from "passport";
 
 

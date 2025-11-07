@@ -21,9 +21,11 @@ export function validateQuery<T extends z.ZodTypeAny>(schema: T) {
     if (!result.success) {
       return res.status(400).json({
         message: "올바르지 못한 쿼리값 입니다",
-        error: result.error.issues,
+        error: result.error.issues
       });
     }
+    req.query = result.data as any;
+    next();
   };
 }
 
@@ -36,5 +38,7 @@ export function validateParam<T extends z.ZodTypeAny>(schema: T) {
         error: result.error.issues,
       });
     }
+    req.params = result.data as any;
+    next();
   };
 }

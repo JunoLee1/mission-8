@@ -53,10 +53,10 @@ model Notification{
   createdAt DateTime          @default(now())
 
   receiverId Int 
-  receiver  User?             @relation("NotificationReceiver",fields: [receiverId], references: [id])
+  receiver  User             @relation("NotificationReceiver",fields: [receiverId], references: [id])
   
   senderId  Int
-  sender    User?             @relation("NotificationSender",fields: [senderId], references: [id])
+  sender    User             @relation("NotificationSender",fields: [senderId], references: [id])
 }
 //---------------------------------------------------
 // article

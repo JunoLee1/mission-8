@@ -2,16 +2,13 @@ import express from "express";
 import apiRoutes from "./routes/index.routes.js"
 import cors from "cors"
 
-
-const app = express();
 const PORT = process.env.PORT || 3000;
+const app = express();
+app.use(express.json());
+
 app.use(cors());
 
 app.use("/api",apiRoutes);
-app.use(express.json());
 
-app.listen(PORT, ()=> {
-    console.log(`서버실행중${PORT}`)
-});
 
 export default app

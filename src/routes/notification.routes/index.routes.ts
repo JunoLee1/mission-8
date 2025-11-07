@@ -16,7 +16,7 @@ router.use("/mark_as_read", readRouter )
 
 // 알림 목록 조회
 router.get("/",
-    passport.authenticate("local",{session:false}),
+    passport.authenticate("jwt",{session:false}),
     validateQuery(querySchema),
     async(req:Request,res:Response,next:NextFunction) => {
         return notificationController.accessAlerts(req, res, next)
@@ -24,7 +24,7 @@ router.get("/",
 
 // 유저의 안 읽은 알림의 개수를 조회
 router.get("/:id", 
-    passport.authenticate("local",{session:false}),
+    passport.authenticate("jwt",{session:false}),
     validateParam(paramsSchema),
     validateQuery(querySchema),
     async(req:Request,res:Response,next:NextFunction) => {
