@@ -28,6 +28,29 @@ model User{
     comment     Comment[]
     article     Article[]
     product     Product[]
+    receivedNotification  Notification[]    @relation("NotificationReceiver")
+    sentNotifications     Notification[]   @relation("NotificationSender")
+}
+
+//--------------------------------------------------
+// notification
+//--------------------------------------------------
+enum NotificationType{
+  isRead
+  unread
+}
+
+model Notification{ 
+  id        Int               @id @default(autoincrement())
+  type      NotificationType 
+  content   String            
+  createdAt DateTime          @default(now())
+
+  receiverId Int 
+  receiver  User?             @relation("NotificationReceiver",fields: [receiverId], references: [id])
+  
+  senderId  Int
+  sender    User?             @relation("NotificationSender",fields: [senderId], references: [id])
 }
 //---------------------------------------------------
 // article
