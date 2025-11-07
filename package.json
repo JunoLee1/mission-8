@@ -25,6 +25,7 @@
     "@types/passport": "^1.0.17",
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
+    "@types/ws": "^8.18.1",
     "bcrypt": "^6.0.0",
     "jest": "^30.2.0",
     "jsonwebtoken": "^9.0.2",
