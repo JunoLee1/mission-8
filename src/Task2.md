@@ -6,8 +6,8 @@
         - TODO []   comment.findMany
    
     - TODO [] 댓글 조회 하기
-        - TODO []   해당 게시글이 존재 유뮤 확인
-        - TODO []   comment.findFirst
+        - TODO [X]   해당 게시글이 존재 유뮤 확인
+        - TODO [X]   comment.findFirst
 
     - TODO [] 댓글 생성하기
         - TODO []   회원가입 한 유저만 게시글 생성 가능
