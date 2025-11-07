@@ -5,6 +5,8 @@ export class NotificationController{
         const {page , type, take} = req.query;
         const user = Number(req.user?.id) 
         if(!user) throw new Error("Unathorized") // 401
+
+        
     }
 
 
