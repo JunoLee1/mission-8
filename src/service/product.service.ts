@@ -125,7 +125,7 @@ export class ProductService {
               userId,
               liker.userId,
               `가격 변경 알림`,
-              "unread",
+              "UNREAD",
               "CHANGED_PRICE",
               undefined,
               updated.id,
@@ -138,7 +138,7 @@ export class ProductService {
           }
       }
     }
-    
+
     const result = await prisma.product.update({
       where: { id },
       data,

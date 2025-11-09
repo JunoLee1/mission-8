@@ -17,7 +17,7 @@ export class NotificationService{
         const {page, take, category, type} = query;
         const skip = (page - 1) * take
         
-        const result = await prisma.notification.findMany({
+        const result = await this.prisma.notification.findMany({
             where:{
                 type,
                 category
@@ -72,10 +72,11 @@ export class NotificationService{
             type: "CHANGED_PRICE",
             productId: productId!,
             userId: senderId,
+            
             message: `상품 가격이 ${oldPrice} → ${newPrice}로 변경되었습니다.`,
         };
     }else {
-            payload = this.generatePayload(category, senderId, content, articleId ?? 0, productId, nickname);
+        payload = this.generatePayload(category, senderId, content, articleId, productId, nickname);
         }
     return { notification, payload };
     }
@@ -85,7 +86,7 @@ export class NotificationService{
     category: "NEW_COMMENT" | "NEW_LIKE" | "CHANGED_PRICE",
     userId: number,
     content: string,
-    articleId: number,
+    articleId?: number,
     productId?: number,
     nickname?: string,
   ): NotificationPayload {
@@ -93,8 +94,8 @@ export class NotificationService{
       case "NEW_COMMENT":
         return {
           type: "NEW_COMMENT",
-          articleId: articleId ?? 0,
-          productId :productId ?? 0,
+          articleId: articleId!,
+          productId: productId!,
           commenter: nickname ?? "unknown",
           userId,
           message: content,
@@ -102,8 +103,8 @@ export class NotificationService{
       case "NEW_LIKE":
         return {
           type: "NEW_LIKE",
-          articleId,
-          productId :productId ?? 0,
+          articleId :articleId ?? 0,
+          productId: productId ?? 0,
           likerName: nickname ?? "unknown",
           userId,
           message: content,
@@ -111,7 +112,7 @@ export class NotificationService{
       case "CHANGED_PRICE":
         return {
           type: "CHANGED_PRICE",
-          productId: productId!,
+          productId: productId ?? 0,
           userId,
           message: content,
         };

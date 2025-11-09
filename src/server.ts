@@ -1,4 +1,4 @@
-import http from"http"
+import http from "http";
 import express from "express";
 import { Server } from "socket.io";
 import app from "./index.js"
@@ -12,7 +12,7 @@ const io = new Server(server,{
         origin: "*",
     }
 })
-io.on("coonection",(soket) =>{
+io.on("coonection",(socket) =>{
     // TODO add handler   
    
 })

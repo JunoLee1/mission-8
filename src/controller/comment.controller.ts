@@ -89,7 +89,7 @@ export class CommentController {
           userId, // senderId
           receiverId,
           `${req.user?.nickname ?? "someone"}님이 댓글을 남겼습니다.`, // content
-          "unread", // type
+          "UNREAD", // type
           "NEW_COMMENT" // category
         );
 
