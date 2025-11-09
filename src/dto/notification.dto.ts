@@ -1,16 +1,16 @@
 export interface NotificationDTO {
     id: number,
-    device: "web" | "ios" |"android",
     type: "unread" | "isRead",
     content:  string,           
     createdAt: Date,
     receiverId: number,
     senderId:  number
+    category:  "NEW_COMMENT" | "NEW_LIKE" | "CHANGED_PRICE"
 }
 
 export interface NotificationQuery{
     page: number,
     take: number,
-    device: "web" | "ios" |"android",
     type: "unread" | "isRead",
+    category:  "NEW_COMMENT" | "NEW_LIKE" | "CHANGED_PRICE"
 }

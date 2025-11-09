@@ -3,12 +3,16 @@ import { ProductService } from "../service/product.service.js";
 import type {ProductQueryDTO} from "../dto/product.dto.js"
 import prisma from "../lib/prisma.js";
 import type { Comment, ProductTag } from "@prisma/client";
+import { Server as HttpServer } from "http";
+import { WebsocketService } from "soket/socket.js";
 
 export class ProductController {
   private productService: ProductService;
-
-  constructor() {
-    this.productService = new ProductService(prisma);
+  private wss : WebsocketService
+  constructor(server: HttpServer) {
+    this.wss = new WebsocketService(server)
+    this.productService = new ProductService(prisma, this.wss);
+    
   }
   async accessListProduct(req: Request, res: Response, next: NextFunction) {
     try {

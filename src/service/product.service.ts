@@ -1,14 +1,21 @@
 import prisma from "../lib/prisma.js";
-import type { ProductQueryDTO,productDTO } from "../dto/product.dto.js";
+import type { ProductQueryDTO, productDTO } from "../dto/product.dto.js";
 import { PrismaClient } from "@prisma/client";
-import {Helper} from "../helper/helper.js"
+import { Helper } from "../helper/helper.js";
+import { NotificationService } from "./notification.service.js";
+import type { WebsocketService } from "soket/socket.js";
 
-const helper = new Helper()
+const helper = new Helper();
+
 
 export class ProductService {
   private prisma: PrismaClient; // ← 필드 선언
-  constructor(prismaClient: PrismaClient) {
+  private notificationService: NotificationService;
+  private wss: WebsocketService;
+  constructor(prismaClient: PrismaClient, wss: WebsocketService) {
     this.prisma = prismaClient; //  ← 생성자에서 초기화
+    this.notificationService = new NotificationService(prisma);
+    this.wss = wss;
   }
 
   async accessListProduct(query: ProductQueryDTO) {
@@ -68,7 +75,7 @@ export class ProductService {
         })),
       };
       const productData = await prisma.product.create({
-        ...data,
+        data,
       });
       return productData;
     }
@@ -78,45 +85,77 @@ export class ProductService {
     const { id, name, description, price, ownerId, productTags } = element;
 
     const idNum = Number(id);
+    if(!idNum) throw new Error("product id is required")
     const product = await helper.findProductById(idNum);
     if (!product) throw new Error("해당 제품은 존재 하지않습니다");
 
-      if(product.ownerId !== userId){
-        throw new Error("Unathorized")
+    if (product.ownerId !== userId) {
+      throw new Error("Unathorized");
     }
+
+    const oldProduct = await prisma.product.findUnique({
+      where: { id: idNum },
+    });
+
     const data: any = {
       name,
       description,
       price,
-      ownerId:userId
+      ownerId: userId,
+      productTags: productTags?.length
+      ?{ create: productTags.map((tagId) => ({ tag: { connect: { id: tagId } } })) }
+        : undefined,
     };
 
-    if (productTags && productTags.length > 0) {
-      data.productTags = {
-        create: productTags.map((tagId) => ({
-          tag: { connect: { id: tagId } },
-        })),
-      };
-    }
+    if (!id) throw new Error("product id is required");
+    const updated = await prisma.product.update({
+      where: { id: idNum },
+      data: { name, description, price, ownerId },
+    });
+    if (!oldProduct) throw new Error("해당 제품이 존재 하지 않습니다");
+    if (oldProduct?.price !== updated.price) {
+      const likers = await prisma.like.findMany({
+        where: { productId: updated.id },
+        select: { userId: true },
+      });
 
+      for (const liker of likers) {
+        if (liker.userId !== userId) {
+            await this.notificationService.createAndGenerate(
+              userId,
+              liker.userId,
+              `가격 변경 알림`,
+              "unread",
+              "CHANGED_PRICE",
+              undefined,
+              updated.id,
+              undefined,
+              oldProduct.price,
+              updated.price
+            );
+
+          return updated;
+          }
+      }
+    }
+    
     const result = await prisma.product.update({
       where: { id },
-      ...data,
+      data,
     });
     return result;
   }
 
-  async deleteProduct(id:number, userId:number){
+  async deleteProduct(id: number, userId: number) {
+    const product = await helper.findProductById(id);
+    if (!product) throw new Error("해당 제품은 존재 하지않습니다.");
 
-    const product = await helper.findProductById(id)
-    if(!product) throw new Error("해당 제품은 존재 하지않습니다.")
-    
-    if(product.ownerId !== userId){
-        throw new Error("Unathorized")
+    if (product.ownerId !== userId) {
+      throw new Error("Unathorized");
     }
     const result = await prisma.product.delete({
-        where:{id}
-    })
-    return result
+      where: { id },
+    });
+    return result;
   }
 }
