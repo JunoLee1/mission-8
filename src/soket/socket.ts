@@ -5,7 +5,7 @@ interface PingMessage {
 }
 
 interface PongMessage { 
-    type: "Pong"
+    type: "pong"
 }
 
 interface NotificationMessage {
@@ -37,7 +37,7 @@ interface PricePayload{
     message: string
 }
 
-export type WebSoketMessage = PingMessage | PongMessage | NotificationMessage;
+export type WebSocketMessage = PingMessage | PongMessage | NotificationMessage;
 
 export type  NotificationPayload = LikePayload | NewCommentPayload | PricePayload
 
@@ -48,7 +48,7 @@ export class WebsocketService {
         this.setupWebsocket()
     }
 
-    public broadcast(message : WebSoketMessage){
+    public broadcast(message : WebSocketMessage){
         this.wss.clients.forEach(client => {
             if (client.readyState === WebSocket.OPEN){
                 client.send(JSON.stringify(message))
@@ -67,9 +67,9 @@ export class WebsocketService {
     }
 
     private handleClientMessage(ws: WebSocket, rawData: WebSocket.RawData){
-        let message : WebSoketMessage;
+        let message : WebSocketMessage;
         try {
-            message = JSON.parse(rawData.toString()) as WebSoketMessage
+            message = JSON.parse(rawData.toString()) as WebSocketMessage
         } catch (error) {
             console.error(error)
             return ;

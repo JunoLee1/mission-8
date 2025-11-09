@@ -1,6 +1,6 @@
 export interface NotificationDTO {
     id: number,
-    type: "unread" | "isRead",
+    type: "UNREAD" | "IS_READ",
     content:  string,           
     createdAt: Date,
     receiverId: number,
@@ -11,6 +11,6 @@ export interface NotificationDTO {
 export interface NotificationQuery{
     page: number,
     take: number,
-    type: "unread" | "isRead",
+    type: "UNREAD" | "IS_READ",
     category:  "NEW_COMMENT" | "NEW_LIKE" | "CHANGED_PRICE"
 }

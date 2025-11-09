@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import prisma from "../lib/prisma.js";
-import { NotificationService } from "service/notification.service.js";
+import { NotificationService } from "../service/notification.service.js";
 import type { WebsocketService } from "../soket/socket.js";
 
 export class NotificationController {
@@ -12,8 +12,8 @@ export class NotificationController {
   }
   async accessAlerts(req: Request, res: Response, next: NextFunction) {
     const { page, type, take, category } = req.query;
-    let safeType: "unread" | "isRead" | undefined = undefined;
-    if (type === "unread" || type === "isRead") {
+    let safeType: "UNREAD" | "IS_READ" | undefined = undefined;
+    if (type === "UNREAD" || type === "IS_READ") {
       safeType = type;
     }
     let safeCategory: "NEW_COMMENT" | "NEW_LIKE" | "CHANGED_PRICE" | undefined =
@@ -27,9 +27,9 @@ export class NotificationController {
       safeCategory = category;
     }
     const query = {
-      page: Number(page) ?? 1,
-      take: Number(take) ?? 10,
-      type: safeType ?? "unread",
+      page: Number(page ?? 1),
+      take: Number(take ?? 10),
+      type: safeType ?? "UNREAD",
       category: safeCategory ?? "NEW_COMMENT",
     };
     const user = Number(req.user?.id);
@@ -60,8 +60,8 @@ export class NotificationController {
         articleId,
         productId,
       } = req.body;
-      let safeType: "unread" | "isRead" | undefined = undefined;
-      if (type === "unread" || type === "isRead") {
+      let safeType: "UNREAD" | "IS_READ" | undefined = undefined;
+      if (type === "UNREAD" || type === "IS_READ") {
         safeType = type;
       }
       let safeCategory:
@@ -85,7 +85,7 @@ export class NotificationController {
         senderId: userId,
         receiverId,
         category: safeCategory ?? "NEW_COMMENT",
-        type: safeType ?? "unread",
+        type: safeType ?? "UNREAD",
         createdAt,
       };
       const notification = await this.notificationService.createNotification(
@@ -97,7 +97,7 @@ export class NotificationController {
       );
       if (!req.user?.nickname) throw new Error("해당 유저 존재하지않습니다");
       const payload = await this.notificationService.generatePayload(
-        category,
+        safeCategory ?? "NEW_COMMENT",
         userId,
         content,
         articleId,
