@@ -6,12 +6,16 @@ import type {
   CommentPatchDTO,
 } from "../dto/comment.dto.js";
 import { Helper } from "../helper/helper.js";
+import { NotificationService } from "./notification.service.js"
+
 
 const helper = new Helper();
 export class CommentService {
   private prisma: PrismaClient; // ← 필드 선언
+  private notificationService :  NotificationService
   constructor(prisma: PrismaClient) {
     this.prisma = prisma; // <-  생성자에서 필드 초기화
+    this.notificationService =  new NotificationService(prisma)
   }
 
   async accessCommentList(elements: CommentQueryDTO) {
@@ -83,3 +87,4 @@ export class CommentService {
     return result
   }
 }
+ 

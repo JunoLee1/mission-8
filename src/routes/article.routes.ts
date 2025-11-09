@@ -12,32 +12,32 @@ const articleController = new ArticleController()
 router.get("/",
     validateQuery(querySchema),
     async(req:Request,res:Response,next:NextFunction)=>{
-    articleController.accessArticleList(req, res, next)    
+        await articleController.accessArticleList(req, res, next)    
 })
 
 
 router.get("/:id",
     validateParam(paramsSchema),
     async(req:Request,res:Response,next:NextFunction)=>{
-    articleController.accessArticle(req, res, next)
+        await articleController.accessArticle(req, res, next)
 })
 
 
 //회원만 게시글 업로드/ 수정/ 삭제 가능
 router.post("/",
-    validateBody(bodySchema),
     passport.authenticate("local",{session:false}),
+    validateBody(bodySchema),
     async(req:Request,res:Response,next:NextFunction)=>{
-    articleController.createArticle(req, res, next)
+        await articleController.createArticle(req, res, next)
 })
 
 
 router.patch("/:id",
+    passport.authenticate("local",{session:false}),
     validateParam(paramsSchema),
     validateBody(bodySchema),
-    passport.authenticate("local",{session:false}),
     async(req:Request,res:Response,next:NextFunction)=>{
-    articleController.modifyArticle(req, res, next)
+        await articleController.modifyArticle(req, res, next)
 })
 
 
@@ -45,7 +45,7 @@ router.delete("/:id",
     validateParam(paramsSchema),
     passport.authenticate("local",{session:false}),
     async(req:Request,res:Response,next:NextFunction)=>{
-    articleController.deleteArticle(req, res, next)
+        await articleController.deleteArticle(req, res, next)
 })
 
 export default router

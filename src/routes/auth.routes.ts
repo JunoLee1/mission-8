@@ -11,7 +11,7 @@ router.get("/login",
     validateQuery(authLoginSchema),
     passport.authenticate("local",{session:false}),
     async(req: Request,res: Response,next : NextFunction) => {
-        ac.login(req, res, next)
+        await ac.login(req, res, next)
     }
 )
 
@@ -20,7 +20,7 @@ router.get("/login",
 router.post("/register",
     validateBody(authRegisterSchema),
     async(req: Request,res: Response,next : NextFunction) => {
-        ac.register(req, res, next)
+       await ac.register(req, res, next)
     }
 )
 

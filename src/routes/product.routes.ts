@@ -14,7 +14,7 @@ const router = express.Router();
 router.get("/",
     validateQuery(accessListProductSchema),
     async(req:Request, res: Response, next:NextFunction) =>{
-    productController.accessListProduct(req, res, next)
+    await productController.accessListProduct(req, res, next)
 })
 
 
@@ -22,7 +22,7 @@ router.get("/",
 router.get("/:id",
     validateParam(productIdSchema),
     async(req:Request, res: Response, next:NextFunction) =>{
-    productController.accessProduct(req, res, next)
+    await productController.accessProduct(req, res, next)
 })
 
 
@@ -31,7 +31,7 @@ router.post("/",
     passport.authenticate("local",{session:false}),
     validateBody(createProductSchema),
     async(req:Request, res: Response, next:NextFunction) =>{
-    productController.createProduct(req, res, next)
+    await productController.createProduct(req, res, next)
 })
 
 
@@ -41,7 +41,7 @@ router.patch("/:id",
     validateParam(productIdSchema),
     validateBody(PatchProductSchema),
     async(req:Request, res: Response, next:NextFunction) =>{
-    productController.modifyProduct(req, res, next)
+    await productController.modifyProduct(req, res, next)
 })
 
 

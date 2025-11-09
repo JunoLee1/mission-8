@@ -3,7 +3,7 @@ import {z} from"zod"
 
 // 스키마
 export const productIdSchema = z.object({
-    id:z.coerce.number().positive().min(0,"0 보다 큰 정수이어야 합니다").default(0)
+    id:z.coerce.number().positive().min(0,"0 보다 큰 정수이어야 합니다")
 });
 
 export const accessListProductSchema = z.object({

@@ -11,12 +11,12 @@ export const querySchema = z.object({
 
 
 export const bodySchema = z.object({
-    id: z.coerce.number().positive().default(0),
+    id: z.coerce.number().positive(),
     content: z.string().min(10,"10글자 이상인  문자열이어야합니다").max(100,"100자 이하인 문자열이어야합니다").optional(),
     title: z.string().min(1,"1글자 이상인  문자열이어야합니다").max(10,"10자 이하인 문자열이어야합니다").optional(),
     comments: z.array(z.string())
 })
 
 export const paramsSchema = z.object({
-    id: z.coerce.number().positive().default(0),
+    id: z.coerce.number().positive(),
 })
