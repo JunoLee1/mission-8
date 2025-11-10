@@ -49,8 +49,8 @@
     description: z
       .string()
       .min(1, "1글자 이상인 문자열이어야합니다")
-      .max(200, "200자 이하인 문자열이어야 합니다").optional,
-    tags: z.array(z.string()).optional,
+      .max(200, "200자 이하인 문자열이어야 합니다").optional(),
+    tags: z.array(z.string()).optional(),
     price: z.coerce.number().positive().min(100, "100원 이상이어야 합니다")
-      .optional,
+      .optional(),
   });

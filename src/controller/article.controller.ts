@@ -82,8 +82,8 @@
           content: String(content ?? ""),
         };
         const result = await this.articleService.modifyArticle(
-          userId,
           articleId,
+          userId,
           data
         );
         res.status(200).json({ result });
@@ -97,7 +97,7 @@
         const userId = Number(req.user?.id);
         if (!userId) throw new Error("unauthorized"); // 401
         const articleId = Number(req.params?.id);
-        const result = await this.articleService.deleteArticle(userId, articleId);
+        const result = await this.articleService.deleteArticle(articleId,userId);
         res.status(200).json({
           result,
         });

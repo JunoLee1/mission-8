@@ -92,6 +92,7 @@
             case "NEW_LIKE":
             case "NEW_COMMENT":
             case "CHANGED_PRICE":
+              break;
             default:
               console.error("Unknown notification type:", message.payload);
           }

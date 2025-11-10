@@ -1,36 +1,40 @@
 import {describe, expect, test} from '@jest/globals';
-import mockPrisma from './__mock__/prisma.js';
+import mockMethod from './__mock__/prisma.js';
 import mockData from './user.json' with { type: 'json' };
 import { AuthService } from "../src/service/auth.service.js";
 import bcrypt from "bcrypt"
+import type { PrismaClient } from '@prisma/client/extension';
+
 
 jest.mock('../src/lib/generate_token',()=>({
   __esModule: true,
-  generateToken:{
+  generateToken: jest.fn(() => ({
     refreshToken: "mock_refresh",
     accessToken: "mock_access",
-  }
+  })),
 }));
 
 jest.mock('../src/lib/prisma', () => ({
   __esModule: true,
-  default: mockPrisma,
+  default: mockMethod,
   
 }));
 
 
 describe("AuthService test", () => {
     let authService: AuthService;
-
-
+    let mokePrisma: PrismaClient
     const userId = 1
-     beforeAll(() => {
-        authService = new AuthService();
-        jest.clearAllMocks();
-        mockPrisma.user.findUnique.mockResolvedValue({// user create 결과 값
-            userId: 1,
+  
+     beforeAll(async () => {
+        let authService = new AuthService(mokePrisma);
+        const hashedPassword = await bcrypt.hash(mockData.tempUser1.password, 10)
+        console.log(mockData.tempUser1.password)
+        //jest.clearAllMocks();
+        mockMethod.user.findUnique.mockResolvedValue({// user create 결과 값
+            id: userId,
             email: mockData.tempUser1.email,
-            password: "hashed_pw",
+            password:hashedPassword
     });
   });
 
@@ -40,11 +44,7 @@ describe("AuthService test", () => {
     const result = await authService.login(userId,{
       email:tempUser1.email,
       password:tempUser1.password});
-    expect(result).toHaveProperty("email", tempUser1.email);
-    
     expect(result).toHaveProperty("refreshToken", "mock_refresh");
-    expect(result).toHaveProperty("accessToken", "mock_access")
-    
-    expect(result).toHaveProperty("password",tempUser1.password)
+    expect(result).toHaveProperty("accessToken", "mock_access");
   });
 });

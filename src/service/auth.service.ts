@@ -6,7 +6,7 @@
   import type { PrismaClient } from "@prisma/client/extension";
 
   export class AuthService {
-    private prisma = prisma;
+    private prisma = prisma; 
     constructor(prisma:PrismaClient){
       this.prisma = prisma
     }
@@ -57,13 +57,14 @@
         email: true,
         password: true,
       });
+      console.log(user)
       if (!user) throw new Error("유저가 존재하지 않습니다");
-
       if (!user.password) throw new Error("비밀번호가 등록되지 않았습니다");
       const isMatch = await bcrypt.compare(password, user.password);
-
+      console.log(isMatch)
       if (!isMatch) throw new Error("비밀번호가 잘못 되었습니다.");
       // token 생성
+      console.log(1234)
       const { refreshToken, accessToken } = generateToken({ id: userId, email }); // 인증 미들웨어 부분 구현 하기
       const result = {
         refreshToken,

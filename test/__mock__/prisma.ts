@@ -1,4 +1,4 @@
-const mockPrisma = {
+const mockMethod = {
     user:{
         findUnique: jest.fn(),
         create:jest.fn(),
@@ -6,4 +6,4 @@ const mockPrisma = {
         findFirst: jest.fn()
     }
 }
-export default mockPrisma
+export default mockMethod

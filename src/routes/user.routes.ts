@@ -13,7 +13,7 @@
   const userController = new UserController();
   // 자신이 등록한 상픔 목록 조회
   router.get(
-    "/me",
+    "/me/products",
     passport.authenticate("local", { session: false }),
     async (req: Request, res: Response, next: NextFunction) => {
       await userController.accessUserProducts(req, res, next);

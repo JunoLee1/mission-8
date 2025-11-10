@@ -6,9 +6,8 @@
     NODE_ENV,
     } from "./constants.js";
     import type { Response } from "express";
-    import jwt from "jsonwebtoken"
+    import jwt from "jsonwebtoken";
 
-    import dotenv from "dotenv"
 
 
     // set cookies

@@ -67,7 +67,9 @@
         ownerId: userId,
       };
 
-      if (productTags && productTags.length > 0) {
+      if (!productTags || productTags.length === 0) {
+        throw new Error("product tags are required");
+      }
         data.productTags = {
           create: productTags.map((tagId) => ({
             tag: { connect: { id: tagId } }, // 단순 tagId 연결
@@ -148,7 +150,7 @@
       });
       return result;
     }
-
+  
     async deleteProduct(id: number, userId: number) {
       const product = await helper.findProductById(id);
       if (!product) throw new Error("해당 제품은 존재 하지않습니다.");

@@ -62,7 +62,7 @@
       "/:id",
       passport.authenticate("local", { session: false }),
       async (req: Request, res: Response, next: NextFunction) => {
-        productController.deleteProduct(req, res, next);
+        await productController.deleteProduct(req, res, next);
       }
     );
 

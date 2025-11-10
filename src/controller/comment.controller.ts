@@ -12,12 +12,12 @@
 
   export class CommentController {
     private commentService: CommentService; // <- 초기화
-    private notificationService:NotificationService;
-    private wss : WebsocketService;
+    //private notificationService:NotificationService;
+    //private wss : WebsocketService;
     constructor(server: HttpServer) {
       this.commentService = new CommentService(prisma); // <- 공용 데이터
-      this.notificationService = new NotificationService(prisma)
-      this.wss = new WebsocketService( server )
+      //this.notificationService = new NotificationService(prisma)
+      //this.wss = new WebsocketService( server )
     }
 
     async accessCommentList(req: Request, res: Response, next: NextFunction) {
@@ -57,7 +57,8 @@
     async createComment(req: Request, res: Response, next: NextFunction) {
       try {
         const userId = Number(req.user?.id);
-        if (!userId) throw new Error("unathurized"); // 401
+        if (!userId) throw new Error("unauthorized"); // 401
+
         const { content, title, name, type, productId, articleId,id } = req.body;
         if (!productId && !articleId)
           throw new Error("productId 또는 articleId 중 하나는 반드시 필요합니다");
@@ -109,9 +110,9 @@
       try {
           const userId = Number(req.user?.id)
           if(!userId) throw new Error("unauthorized") // 401
-          const commentId =  Number(req.query.id)
+          const commentId =  Number(req.params.id)
           const result = await this.commentService.deleteComment(commentId)
-          res.status(200).json()
+          res.status(200).json({data:result})
       } catch (error) {
         next(error);
       }

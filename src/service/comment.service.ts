@@ -7,7 +7,7 @@
   } from "../dto/comment.dto.js";
   import { Helper } from "../helper/helper.js";
   import { NotificationService } from "./notification.service.js";
-  import { emitToUser } from "server.js";
+  import { emitToUser } from "../server.js";
   const helper = new Helper();
   export class CommentService {
     private prisma: PrismaClient; // ← 필드 선언
@@ -70,7 +70,7 @@
             "NEW_COMMENT",
             articleId
           );
-        emitToUser(userId, "NEW_COMMENT", {
+        emitToUser(article.ownerId, "NEW_COMMENT", {
           type: "NEW_COMMENT",
           payload,
         });
