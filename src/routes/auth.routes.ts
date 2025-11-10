@@ -11,7 +11,7 @@ import type { WebsocketService } from "socket/socket.js";
 
 export default function createAuthRouter(wss: WebsocketService) {
   const router = express.Router();
-  const authController = new AuthController( wss );
+  const authController = new AuthController(wss);
   // 로그인 API
   router.get(
     "/login",
