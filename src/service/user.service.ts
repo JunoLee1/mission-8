@@ -75,17 +75,16 @@ export class UserService {
     if (!user || !user.password) throw new Error("유효하지 않는 유저입니다");
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
-    if(isMatch) throw new Error("현재 비밀번호와 같은 비밀번호 입니다.")
-    
-    const hashPassword = await bcrypt.hash(newPassword, 10)
+    if (isMatch) throw new Error("현재 비밀번호와 같은 비밀번호 입니다.");
+
+    const hashPassword = await bcrypt.hash(newPassword, 10);
 
     const result = await prisma.user.update({
       where: { id: userId },
       data: {
-        password: hashPassword
+        password: hashPassword,
       },
     });
     return result;
   }
 }
-

@@ -12,7 +12,7 @@ export interface CommentDTO {
 }
 
 export interface CommentQueryDTO {
-    id: number;
+  id: number;
   take: number;
   page: number;
   type?: "MARKET" | "ARTICLE";

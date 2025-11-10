@@ -7,7 +7,7 @@ import type {
 } from "../dto/comment.dto.js";
 import prisma from "../lib/prisma.js";
 import { Server as HttpServer } from "http";
-import {WebsocketService} from "../soket/socket.js"
+import {WebsocketService} from "../socket/socket.js"
 
 
 export class CommentController {

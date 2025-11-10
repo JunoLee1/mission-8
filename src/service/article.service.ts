@@ -6,10 +6,8 @@ import type {
 import prisma from "../lib/prisma.js";
 import { Helper } from "../helper/helper.js";
 
-
-const helper = new Helper()
+const helper = new Helper();
 export class ArticleService {
-  
   async accessArticleList(query: ArticleQueryDTO) {
     const { page, take, title, content, keyword } = query;
     const skip = (page - 1) * take;
@@ -103,6 +101,6 @@ export class ArticleService {
     const result = await prisma.article.delete({
       where: { id: articleId },
     });
-    return result
+    return result;
   }
 }

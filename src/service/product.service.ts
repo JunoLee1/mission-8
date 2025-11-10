@@ -3,10 +3,9 @@ import type { ProductQueryDTO, productDTO } from "../dto/product.dto.js";
 import { PrismaClient } from "@prisma/client";
 import { Helper } from "../helper/helper.js";
 import { NotificationService } from "./notification.service.js";
-import type { WebsocketService } from "soket/socket.js";
+import type { WebsocketService } from "../socket/socket.js";
 
 const helper = new Helper();
-
 
 export class ProductService {
   private prisma: PrismaClient; // ← 필드 선언
@@ -85,7 +84,7 @@ export class ProductService {
     const { id, name, description, price, ownerId, productTags } = element;
 
     const idNum = Number(id);
-    if(!idNum) throw new Error("product id is required")
+    if (!idNum) throw new Error("product id is required");
     const product = await helper.findProductById(idNum);
     if (!product) throw new Error("해당 제품은 존재 하지않습니다");
 
@@ -103,7 +102,11 @@ export class ProductService {
       price,
       ownerId: userId,
       productTags: productTags?.length
-      ?{ create: productTags.map((tagId) => ({ tag: { connect: { id: tagId } } })) }
+        ? {
+            create: productTags.map((tagId) => ({
+              tag: { connect: { id: tagId } },
+            })),
+          }
         : undefined,
     };
 
@@ -121,21 +124,21 @@ export class ProductService {
 
       for (const liker of likers) {
         if (liker.userId !== userId) {
-            await this.notificationService.createAndGenerate(
-              userId,
-              liker.userId,
-              `가격 변경 알림`,
-              "UNREAD",
-              "CHANGED_PRICE",
-              undefined,
-              updated.id,
-              undefined,
-              oldProduct.price,
-              updated.price
-            );
+          await this.notificationService.createAndGenerate(
+            userId,
+            liker.userId,
+            `가격 변경 알림`,
+            "UNREAD",
+            "CHANGED_PRICE",
+            undefined,
+            updated.id,
+            undefined,
+            oldProduct.price,
+            updated.price
+          );
 
           return updated;
-          }
+        }
       }
     }
 

@@ -1,39 +1,48 @@
 import express from "express";
-import type{ Request, Response, NextFunction } from "express"
-import sendRouter from"./send.routes.js"
-import readRouter from "./mark_as_read.routes.js"
-import { NotificationController } from "controller/notification.controller.js";
-import { validateQuery,validateParam } from "../../middleWare/validateMiddle.js";
-import { paramsSchema,querySchema }  from "../../validation/notification.validation.js"
+import type { Request, Response, NextFunction } from "express";
+import sendRouter from "./send.routes.js";
+import readRouter from "./mark_as_read.routes.js";
+import { NotificationController } from "../../controller/notification.controller.js";
+import {
+  validateQuery,
+  validateParam,
+} from "../../middleWare/validateMiddle.js";
+import {
+  paramsSchema,
+  querySchema,
+} from "../../validation/notification.validation.js";
 import passport from "passport";
+import { WebsocketService } from "../../socket/socket.js";
 
-const router = express.Router()
-const notificationController = new NotificationController()
+export default function createNotification(wss: WebsocketService) {
+  const notificationController = new NotificationController(wss);
 
-router.use("/send", sendRouter);
+  const router = express.Router();
 
-router.use("/mark_as_read", readRouter )
+  router.use("/send", sendRouter);
 
-// 알림 목록 조회
-router.get("/",
-    passport.authenticate("jwt",{session:false}),
+  router.use("/mark_as_read", readRouter);
+
+  // 알림 목록 조회
+  router.get(
+    "/",
+    passport.authenticate("jwt", { session: false }),
     validateQuery(querySchema),
-    async(req:Request,res:Response,next:NextFunction) => {
-        return notificationController.accessAlerts(req, res, next)
-})
+    async (req: Request, res: Response, next: NextFunction) => {
+      return notificationController.accessAlerts(req, res, next);
+    }
+  );
 
-// 유저의 안 읽은 알림의 개수를 조회
-router.get("/:id", 
-    passport.authenticate("jwt",{session:false}),
+  // 유저의 안 읽은 알림의 개수를 조회
+  router.get(
+    "/:id",
+    passport.authenticate("jwt", { session: false }),
     validateParam(paramsSchema),
     validateQuery(querySchema),
-    async(req:Request,res:Response,next:NextFunction) => {
-        return notificationController.accessAlertsCnt(req, res, next)
-})
+    async (req: Request, res: Response, next: NextFunction) => {
+      return notificationController.accessAlertsCnt(req, res, next);
+    }
+  );
 
-
-
-
-export default router;
-
-
+  return router;
+}

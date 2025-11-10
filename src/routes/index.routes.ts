@@ -1,16 +1,20 @@
 import express from "express";
-import authRouter from "./auth.routes.js"
-import userRouter from "./user.routes.js"
-import productRouter from "./product.routes.js"
-import articleRouter from "./article.routes.js"
-import commentRouter from"./comment.routes.js"
-import notificationRouter from "./notification.routes/index.routes.js"
+import authRouter from "./auth.routes.js";
+import userRouter from "./user.routes.js";
+import createProductRouter from "./product.routes.js";
+import articleRouter from "./article.routes.js";
+import createCommentRouter from "./comment.routes.js";
+import notificationRouter from "./notification.routes/index.routes.js";
+import type { Server as HttpServer } from "http";
+
 const router = express.Router();
 
-router.use("/auth", authRouter);
-router.use("/user", userRouter)
-router.use("/product", productRouter)
-router.use("/article", articleRouter)
-router.use("/comment", commentRouter)
-router.use("/notification",notificationRouter)
-export default router;
+export default function createApiRouter(server: HttpServer) {
+  router.use("/auth", authRouter);
+  router.use("/user", userRouter);
+  router.use("/product", createProductRouter(server));
+  router.use("/article", articleRouter);
+  router.use("/comment", createCommentRouter(server));
+  router.use("/notification", notificationRouter);
+  return router;
+}

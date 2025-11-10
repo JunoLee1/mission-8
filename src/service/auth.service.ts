@@ -13,10 +13,7 @@ export class AuthService {
     });
   }
 
-  private async findUser(
-    email: string,
-    nickname: string
-  ) {
+  private async findUser(email: string, nickname: string) {
     return await prisma.user.findFirst({
       where: {
         OR: [{ email }, { nickname }],

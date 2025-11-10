@@ -99,7 +99,7 @@ export class ArticleController {
       const articleId = Number(req.params?.id);
       const result = await this.articleService.deleteArticle(userId, articleId);
       res.status(200).json({
-        result
+        result,
       });
     } catch (error) {
       next(error);

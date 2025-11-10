@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import prisma from "../lib/prisma.js";
 import { NotificationService } from "../service/notification.service.js";
-import type { WebsocketService } from "../soket/socket.js";
+import type { WebsocketService } from "../socket/socket.js";
 
 export class NotificationController {
   private wss: WebsocketService;

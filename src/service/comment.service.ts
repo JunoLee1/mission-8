@@ -6,16 +6,15 @@ import type {
   CommentPatchDTO,
 } from "../dto/comment.dto.js";
 import { Helper } from "../helper/helper.js";
-import { NotificationService } from "./notification.service.js"
-
+import { NotificationService } from "./notification.service.js";
 
 const helper = new Helper();
 export class CommentService {
   private prisma: PrismaClient; // ← 필드 선언
-  private notificationService :  NotificationService
+  private notificationService: NotificationService;
   constructor(prisma: PrismaClient) {
     this.prisma = prisma; // <-  생성자에서 필드 초기화
-    this.notificationService =  new NotificationService(prisma)
+    this.notificationService = new NotificationService(prisma);
   }
 
   async accessCommentList(elements: CommentQueryDTO) {
@@ -58,15 +57,15 @@ export class CommentService {
   }
 
   async modifyComment(userId: Number, elements: CommentPatchDTO) {
-    const { id, content, title} = elements;
+    const { id, content, title } = elements;
     const commentId = id;
-    
+
     const comment = await helper.findCommentById(commentId);
     if (!comment) throw new Error("해당 댓글이 없습니다"); //404
 
     const element = {
       content: elements.content ?? "",
-      title: elements.title ??  "",
+      title: elements.title ?? "",
     };
     const result = await this.prisma.comment.update({
       where: { id: commentId },
@@ -77,14 +76,13 @@ export class CommentService {
     return result;
   }
 
-  async deleteComment(commentId:number) {
-    const comment = await helper.findCommentById(commentId)
-    if (!comment) throw new Error ("해당 댓글이 없습니다") // 404
+  async deleteComment(commentId: number) {
+    const comment = await helper.findCommentById(commentId);
+    if (!comment) throw new Error("해당 댓글이 없습니다"); // 404
 
     const result = await this.prisma.comment.delete({
-        where:{id: commentId}
-    })
-    return result
+      where: { id: commentId },
+    });
+    return result;
   }
 }
- 
