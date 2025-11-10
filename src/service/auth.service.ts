@@ -3,8 +3,13 @@ import prisma from "../lib/prisma.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../lib/generate_token.js";
 import type { Prisma } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client/extension";
 
 export class AuthService {
+  private prisma = prisma;
+  constructor(prisma:PrismaClient){
+    this.prisma = prisma
+  }
   private async findById<T extends Prisma.UserSelect>(id?: number, select?: T) {
     if (!id) throw new Error();
     return await prisma.user.findUnique({

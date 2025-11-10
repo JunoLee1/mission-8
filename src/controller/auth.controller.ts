@@ -2,11 +2,15 @@ import express from "express";
 import type { Request, Response, NextFunction } from "express";
 import { AuthService } from "../service/auth.service.js";
 import type { RegisterDTO, LoginDTO } from "../dto/auth.dto.js";
-export class AuthController {
-  private authService: AuthService;
+import { WebsocketService } from "../socket/socket.js";
+import prisma from "../lib/prisma.js"
 
-  constructor() {
-    this.authService = new AuthService(); // 공통 자원은 한 번만 생성
+export class AuthController {
+  private wss: WebsocketService;
+  private authService: AuthService;
+  constructor(wss:WebsocketService) {
+    this.authService = new AuthService(prisma); // 공통 자원은 한 번만 생성
+    this.wss = wss;
   }
 
   async register(req: Request, res: Response, next: NextFunction) {

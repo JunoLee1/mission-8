@@ -7,7 +7,7 @@ import type {
 } from "../dto/comment.dto.js";
 import { Helper } from "../helper/helper.js";
 import { NotificationService } from "./notification.service.js";
-
+import { emitToUser } from "server.js";
 const helper = new Helper();
 export class CommentService {
   private prisma: PrismaClient; // ← 필드 선언
@@ -39,8 +39,14 @@ export class CommentService {
     return comment;
   }
 
-  async createComment(elements: CommentDTO) {
-    const { content, title, name, type, productId, articleId } = elements;
+  async createComment(nickname:string,elements: CommentDTO) {
+    const { content, title, name, type, productId, articleId, userId } =
+      elements;
+    const article = await prisma.article.findUnique({
+      where: { id: articleId },
+      select: { ownerId: true, title: true },
+    });
+    if (!article) throw new Error("해당 게시글이 존재하지 않습니다");
     const connectData =
       type === "MARKET"
         ? { connect: { id: productId } }
@@ -53,6 +59,22 @@ export class CommentService {
         ...connectData,
       },
     });
+
+    if (article.ownerId !== userId) {
+      const { notification, payload } =
+        await this.notificationService.createAndGenerate(
+          userId,
+          article.ownerId,
+          `${nickname}님이 댓글을 남겼습니다.`,
+          "UNREAD",
+          "NEW_COMMENT",
+          articleId
+        );
+      emitToUser(userId, "NEW_COMMENT", {
+        type: "NEW_COMMENT",
+        payload,
+      });
+    }
     return result;
   }
 

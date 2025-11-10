@@ -7,6 +7,8 @@ import {
   changePasswordSchema,
 } from "../validation/user.validation.js";
 import { validateBody } from "../middleWare/validateMiddle.js";
+
+
 const router = express.Router();
 const userController = new UserController();
 // 자신이 등록한 상픔 목록 조회

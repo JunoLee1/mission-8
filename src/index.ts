@@ -4,12 +4,13 @@ import cors from "cors";
 import type { Server as HttpServer } from "http";
 
 export default function initializeRoutes(server: HttpServer) {
-  const PORT = process.env.PORT || 3000;
   const app = express();
-  app.use(express.json());
 
+  app.use(express.json());
   app.use(cors());
 
+  // server 인자를 전달해야 함
   app.use("/api", createApiRouter(server));
+
   return app;
 }

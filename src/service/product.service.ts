@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { Helper } from "../helper/helper.js";
 import { NotificationService } from "./notification.service.js";
 import type { WebsocketService } from "../socket/socket.js";
-
+import { emitToUser } from "server.js";
 const helper = new Helper();
 
 export class ProductService {
@@ -123,8 +123,8 @@ export class ProductService {
       });
 
       for (const liker of likers) {
-        if (liker.userId !== userId) {
-          await this.notificationService.createAndGenerate(
+        if (liker.userId !== userId) { // 상품 올린사람이 아닌 경우
+          const { payload } = await this.notificationService.createAndGenerate(
             userId,
             liker.userId,
             `가격 변경 알림`,
@@ -136,7 +136,7 @@ export class ProductService {
             oldProduct.price,
             updated.price
           );
-
+          emitToUser(liker.userId,"CHANGED_PRICE",payload)
           return updated;
         }
       }

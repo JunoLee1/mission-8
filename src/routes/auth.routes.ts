@@ -7,25 +7,31 @@ import {
 } from "../validation/auth.validation.js";
 import { validateQuery, validateBody } from "../middleWare/validateMiddle.js";
 import passport from "passport";
-const router = express.Router();
-const ac = new AuthController();
-// 로그인 API
-router.get(
-  "/login",
-  validateQuery(authLoginSchema),
-  passport.authenticate("local", { session: false }),
-  async (req: Request, res: Response, next: NextFunction) => {
-    await ac.login(req, res, next);
-  }
-);
+import type { Server as HttpServer } from "http";
+import { PrismaClient } from "@prisma/client/extension";
+import type { WebsocketService } from "socket/socket.js";
 
-// 회원가입 API
-router.post(
-  "/register",
-  validateBody(authRegisterSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
-    await ac.register(req, res, next);
-  }
-);
+export default function createAuthRouter(wss: WebsocketService) {
+  const router = express.Router();
+  const authController = new AuthController( wss );
+  // 로그인 API
+  router.get(
+    "/login",
+    validateQuery(authLoginSchema),
+    passport.authenticate("local", { session: false }),
+    async (req: Request, res: Response, next: NextFunction) => {
+      await authController.login(req, res, next);
+    }
+  );
 
-export default router;
+  // 회원가입 API
+  router.post(
+    "/register",
+    validateBody(authRegisterSchema),
+    async (req: Request, res: Response, next: NextFunction) => {
+      await authController.register(req, res, next);
+    }
+  );
+
+  return router;
+}

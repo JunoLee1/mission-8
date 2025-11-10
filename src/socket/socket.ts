@@ -36,13 +36,19 @@ interface PricePayload {
   userId: number;
   message: string;
 }
+interface LoginPayload{
+  type: "LOGIN_SUCCESS";
+  userId: number;
+  message: string;
+}
 
 export type WebSocketMessage = PingMessage | PongMessage | NotificationMessage;
 
 export type NotificationPayload =
   | LikePayload
   | NewCommentPayload
-  | PricePayload;
+  | PricePayload
+  | LoginPayload
 
 export class WebsocketService {
   private wss: WebSocketServer;

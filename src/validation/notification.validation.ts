@@ -7,10 +7,17 @@ export const paramsSchema = z.object({
 export const querySchema = z.object({
     page:z.coerce.number().positive().default(1),
     take:z.coerce.number().positive().default(10),
-    type: z.enum(["unread","isRead"])
+    type: z.enum(["UNREAD","IS_READ"]),
+    category:z.enum(["NEW_COMMENT","NEW_LIKE","CHANGED_PRICE","LOGIN_SUCCESS"])
 })
 
 export const bodySchema = z.object({
     content: z.string(),
-    type: z.enum(["unread","isRead"])
+    type: z.enum(["UNREAD","IS_READ"]),
+    category:z.enum(["NEW_COMMENT","NEW_LIKE","CHANGED_PRICE","LOGIN_SUCCESS"])
 })
+
+
+  
+ 
+  

@@ -71,44 +71,9 @@ export class CommentController {
         productId,
         articleId,
       };
-      const comment = await this.commentService.createComment(elements);
-
-      const post =  await prisma.article.findUnique({
-        where:{id: articleId},
-        select:{
-          ownerId:true,
-        }
-      })
-      if (!post) throw new Error("Article not found");
-      const receiverId = post.ownerId;
-
-      // 작성자가 본인인 경우 알림 스킵
-      if (receiverId !== userId) {
-        // 3️⃣ 알림 DB 생성
-        const notification = await this.notificationService.createNotification(
-          userId, // senderId
-          receiverId,
-          `${req.user?.nickname ?? "someone"}님이 댓글을 남겼습니다.`, // content
-          "UNREAD", // type
-          "NEW_COMMENT" // category
-        );
-
-        // 4️⃣ WebSocket payload 생성
-        const payload = await this.notificationService.generatePayload(
-          "NEW_COMMENT",
-          userId,
-          notification.content,
-          articleId,
-          undefined, // productId 없음
-          req.user?.nickname ?? "unknown"
-        );
-
-        // 5️⃣ WebSocket 브로드캐스트
-        this.wss.broadcast({
-          type: "notification",
-          payload,
-        });
-      }
+      const nickname = req.user?.nickname
+      if(!nickname) throw new Error("해당 닉네임 존재 하지 않습니다")
+      const comment = await this.commentService.createComment(nickname,elements);
 
 
       res.status(201).json({
