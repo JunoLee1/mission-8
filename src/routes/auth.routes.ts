@@ -7,8 +7,6 @@ import {
 } from "../validation/auth.validation.js";
 import { validateQuery, validateBody } from "../middleWare/validateMiddle.js";
 import passport from "passport";
-import type { Server as HttpServer } from "http";
-import { PrismaClient } from "@prisma/client/extension";
 import type { WebsocketService } from "socket/socket.js";
 
 export default function createAuthRouter(wss: WebsocketService) {
