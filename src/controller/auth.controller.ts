@@ -3,12 +3,12 @@ import type { Request, Response, NextFunction } from "express";
 import { AuthService } from "../service/auth.service.js";
 import type { RegisterDTO, LoginDTO } from "../dto/auth.dto.js";
 import { WebsocketService } from "../socket/socket.js";
-import prisma from "../lib/prisma.js"
+import prisma from "../lib/prisma.js";
 
 export class AuthController {
   private wss: WebsocketService;
   private authService: AuthService;
-  constructor(wss:WebsocketService) {
+  constructor(wss: WebsocketService) {
     this.authService = new AuthService(prisma); // 공통 자원은 한 번만 생성
     this.wss = wss;
   }

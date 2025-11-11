@@ -7,8 +7,8 @@ import type { PrismaClient } from "@prisma/client/extension";
 
 export class AuthService {
   private prisma = prisma;
-  constructor(prisma:PrismaClient){
-    this.prisma = prisma
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
   }
   private async findById<T extends Prisma.UserSelect>(id?: number, select?: T) {
     if (!id) throw new Error();
@@ -57,13 +57,14 @@ export class AuthService {
       email: true,
       password: true,
     });
+    console.log(user);
     if (!user) throw new Error("유저가 존재하지 않습니다");
-
     if (!user.password) throw new Error("비밀번호가 등록되지 않았습니다");
     const isMatch = await bcrypt.compare(password, user.password);
-
+    console.log(isMatch);
     if (!isMatch) throw new Error("비밀번호가 잘못 되었습니다.");
     // token 생성
+    console.log(1234);
     const { refreshToken, accessToken } = generateToken({ id: userId, email }); // 인증 미들웨어 부분 구현 하기
     const result = {
       refreshToken,
@@ -73,24 +74,24 @@ export class AuthService {
   }
 
   /*
-    private async findUserEmailDuplicate (email:string){
-        const user = await prisma.user.findUnique({
-            where:{ email }
-        })
+      private async findUserEmailDuplicate (email:string){
+          const user = await prisma.user.findUnique({
+              where:{ email }
+          })
 
-        if (user) throw new Error("해당 유저는 존재하지 않습니다")
-        return user
-    }
+          if (user) throw new Error("해당 유저는 존재하지 않습니다")
+          return user
+      }
 
 
-    private async findUserNicknameDuplicate (nickname :string){
-        const user =  await prisma.user.findUnique({
-            where:{ nickname }
-        })
+      private async findUserNicknameDuplicate (nickname :string){
+          const user =  await prisma.user.findUnique({
+              where:{ nickname }
+          })
 
-        if (user) throw new Error("이미 존재하는 닉네임 입니다")
-        return user;
-    }
-} 
-*/
+          if (user) throw new Error("이미 존재하는 닉네임 입니다")
+          return user;
+      }
+  } 
+  */
 }

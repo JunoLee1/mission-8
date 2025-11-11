@@ -36,7 +36,7 @@ export class NotificationController {
     if (!user) throw new Error("Unathorized"); // 401
     try {
       const result = await this.notificationService.accessAlerts(query);
-      return result;
+      return res.status(200).json({ data: result });
     } catch (error) {
       next(error);
     }

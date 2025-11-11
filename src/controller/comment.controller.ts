@@ -1,23 +1,19 @@
 import { CommentService } from "../service/comment.service.js";
-import {NotificationService }from"../service/notification.service.js"
+import { NotificationService } from "../service/notification.service.js";
 import type { Request, Response, NextFunction } from "express";
-import type {
-  CommentDTO,
-  CommentPatchDTO,
-} from "../dto/comment.dto.js";
+import type { CommentDTO, CommentPatchDTO } from "../dto/comment.dto.js";
 import prisma from "../lib/prisma.js";
 import { Server as HttpServer } from "http";
-import {WebsocketService} from "../socket/socket.js"
-
+import { WebsocketService } from "../socket/socket.js";
 
 export class CommentController {
   private commentService: CommentService; // <- 초기화
-  private notificationService:NotificationService;
-  private wss : WebsocketService;
+  //private notificationService:NotificationService;
+  //private wss : WebsocketService;
   constructor(server: HttpServer) {
     this.commentService = new CommentService(prisma); // <- 공용 데이터
-    this.notificationService = new NotificationService(prisma)
-    this.wss = new WebsocketService( server )
+    //this.notificationService = new NotificationService(prisma)
+    //this.wss = new WebsocketService( server )
   }
 
   async accessCommentList(req: Request, res: Response, next: NextFunction) {
@@ -47,8 +43,8 @@ export class CommentController {
       const result = await this.commentService.accessComment(commentId);
 
       res.status(200).json({
-        data:result
-      })
+        data: result,
+      });
     } catch (error) {
       next(error);
     }
@@ -57,8 +53,9 @@ export class CommentController {
   async createComment(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = Number(req.user?.id);
-      if (!userId) throw new Error("unathurized"); // 401
-      const { content, title, name, type, productId, articleId,id } = req.body;
+      if (!userId) throw new Error("unauthorized"); // 401
+
+      const { content, title, name, type, productId, articleId, id } = req.body;
       if (!productId && !articleId)
         throw new Error("productId 또는 articleId 중 하나는 반드시 필요합니다");
 
@@ -71,14 +68,16 @@ export class CommentController {
         productId,
         articleId,
       };
-      const nickname = req.user?.nickname
-      if(!nickname) throw new Error("해당 닉네임 존재 하지 않습니다")
-      const comment = await this.commentService.createComment(nickname,elements);
-
+      const nickname = req.user?.nickname;
+      if (!nickname) throw new Error("해당 닉네임 존재 하지 않습니다");
+      const comment = await this.commentService.createComment(
+        nickname,
+        elements
+      );
 
       res.status(201).json({
-        data:comment
-      })
+        data: comment,
+      });
     } catch (error) {
       next(error);
     }
@@ -89,17 +88,17 @@ export class CommentController {
       const userId = req.user?.id;
       if (!userId) throw new Error("unauthorized"); // 401
       const commentId = Number(req.params.id);
-      const { content, title, } = req.body;
+      const { content, title } = req.body;
       const elements: CommentPatchDTO = {
         id: commentId,
-        content: String(content ?? ""), 
+        content: String(content ?? ""),
         title: String(title ?? ""),
         userId,
       };
       const result = await this.commentService.modifyComment(userId, elements);
       res.status(200).json({
-        data:result
-      })
+        data: result,
+      });
     } catch (error) {
       next(error);
     }
@@ -107,11 +106,11 @@ export class CommentController {
 
   async deleteComment(req: Request, res: Response, next: NextFunction) {
     try {
-        const userId = Number(req.user?.id)
-        if(!userId) throw new Error("unauthorized") // 401
-        const commentId =  Number(req.query.id)
-        const result = await this.commentService.deleteComment(commentId)
-        res.status(200).json()
+      const userId = Number(req.user?.id);
+      if (!userId) throw new Error("unauthorized"); // 401
+      const commentId = Number(req.params.id);
+      const result = await this.commentService.deleteComment(commentId);
+      res.status(200).json({ data: result });
     } catch (error) {
       next(error);
     }

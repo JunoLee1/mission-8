@@ -38,7 +38,7 @@ export default function createCommentRouter(server: HttpServer) {
   // 회원만 댓글 생성/ 수정/ 삭제 가능
   router.post(
     "/",
-    passport.authenticate("local", { session: false }),
+    passport.authenticate("jwt", { session: false }),
     validateBody(commentBodySchema),
     async (req: Request, res: Response, next: NextFunction) => {
       await commentController.createComment(req, res, next);
@@ -47,7 +47,7 @@ export default function createCommentRouter(server: HttpServer) {
 
   router.patch(
     "/:id",
-    passport.authenticate("local", { session: false }),
+    passport.authenticate("jwt", { session: false }),
     validateParam(commentParamSchema),
     validateBody(commentPatchSchema),
     async (req: Request, res: Response, next: NextFunction) => {
@@ -57,7 +57,7 @@ export default function createCommentRouter(server: HttpServer) {
 
   router.delete(
     "/:id",
-    passport.authenticate("local", { session: false }),
+    passport.authenticate("jwt", { session: false }),
     validateParam(commentParamSchema),
     async (req: Request, res: Response, next: NextFunction) => {
       await commentController.deleteComment(req, res, next);

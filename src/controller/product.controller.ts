@@ -37,18 +37,18 @@ export class ProductController {
 
   async createProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, description, price, ownerId, productTags } = req.body as {
+      const { name, description, price, ownerId, tags } = req.body as {
         name: string;
         description: string;
         price: number;
         ownerId: number;
-        productTags: { id: number; productId: number; tagId: number }[];
+        tags?: (number | string)[];
       };
       const user = req.user;
       if (!user) throw new Error("unathorized");
       const userId = user.id;
       if (!userId) throw new Error("unathorized");
-      const tagIds = productTags.map((pt) => pt.tagId);
+      const tagIds = (tags ?? []).map((tag) => Number(tag));
       const result = await this.productService.createProduct(userId, {
         name,
         description,
@@ -65,19 +65,19 @@ export class ProductController {
   async modifyProduct(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params; // productId
-      const { name, description, price, ownerId, productTags } = req.body as {
+      const { name, description, price, ownerId, tags } = req.body as {
         name: string;
         description: string;
         price: number;
         ownerId: number;
-        productTags: { id: number; productId: number; tagId: number }[];
+        tags?: (number | string)[];
       };
 
       const user = req.user;
       if (!user) throw new Error("unathorized");
       const userId = user.id;
       if (!userId) throw new Error("unathorized");
-      const tagIds = productTags.map((pt) => pt.tagId);
+      const tagIds = (tags ?? []).map((tag) => Number(tag));
       const result = await this.productService.modifyProduct(userId, {
         id: Number(id),
         name,
@@ -103,7 +103,7 @@ export class ProductController {
       if (!userId) throw new Error("unathorized");
 
       const result = await this.productService.deleteProduct(productId, userId);
-      return result;
+      return res.status(200).json({ data: result });
     } catch (error) {
       next(error);
     }
