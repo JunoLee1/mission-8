@@ -27,6 +27,7 @@ export default function createAuthRouter(wss: WebsocketService) {
     "/register",
     validateBody(authRegisterSchema),
     async (req: Request, res: Response, next: NextFunction) => {
+      console.log(1)
       await authController.register(req, res, next);
     }
   );
